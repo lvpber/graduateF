@@ -124,8 +124,6 @@ public class NodeImpl implements INode, ILifeCycle {
             if (started) {
                 return;
             }
-            /** 启用RPC Server 监听RPC请求（客户端、其他节点） */
-            rpcServerImpl.start();
 
             // 初始化kafka模块
             KafkaService.init();
@@ -135,15 +133,10 @@ public class NodeImpl implements INode, ILifeCycle {
             logModuleImpl = new LogModuleImpl(this.getPeerSet().getSelf().getAddr());
             stateMachine = new StateMachineImpl(this.getPeerSet().getSelf().getAddr());
 
-            /** 初始化计时器 */
-            heartBeatTimer = new MyTimer();
-            electionTimer  = new MyTimer();
-            heartBeatTimer.reset(new HeartBeatTimerTask(),HEART_BEAT_TIMEOUT);
-            electionTimer.reset(new ElectionTimerTask(),randTimerDuration());
-
-            /** 启动守护线程 */
-            RaftThreadPool.execute(heartBeatTask,false);
-            RaftThreadPool.execute(electionTask,false);
+            /** 如果是宕机恢复，当前任期为之前的最后一条日志的任期号 */
+            /** 阅读持久化的内容包括Log，任期号和投票的对象 */
+            persistVal = RaftPersistVal.getInstance();
+            readPersist();
 
             /** 初始化节点任务情况，重启之后所有任务清空 */
             RunningLogs = new ArrayList<>();
@@ -162,10 +155,18 @@ public class NodeImpl implements INode, ILifeCycle {
                 OfflineMap.put(peerAddr,0);
             }
 
-            /** 如果是宕机恢复，当前任期为之前的最后一条日志的任期号 */
-            /** 阅读持久化的内容包括Log，任期号和投票的对象 */
-            persistVal = RaftPersistVal.getInstance();
-            readPersist();
+            /** 启用RPC Server 监听RPC请求（客户端、其他节点） */
+            rpcServerImpl.start();
+
+            /** 初始化计时器 */
+            heartBeatTimer = new MyTimer();
+            electionTimer  = new MyTimer();
+            heartBeatTimer.reset(new HeartBeatTimerTask(),HEART_BEAT_TIMEOUT);
+            electionTimer.reset(new ElectionTimerTask(),randTimerDuration());
+
+            /** 启动守护线程 */
+            RaftThreadPool.execute(heartBeatTask,false);
+            RaftThreadPool.execute(electionTask,false);
 
             started = true;	//开始
         }

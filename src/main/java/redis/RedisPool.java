@@ -5,7 +5,10 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisPool {
+    /** 杭研院REDIS配置 */
+//    private static String ADDR = "192.168.0.67";
 
+    /** 北航REDIS配置 */
     private static String ADDR = "192.168.3.188";       //Redis服务器IP
     private static Integer PORT = 6379;             //Redis的端口号
     private static String AUTH = "redis2333";       //访问密码
