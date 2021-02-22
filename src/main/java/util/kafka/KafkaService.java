@@ -11,7 +11,10 @@ import java.util.Properties;
  * will generally be faster than having multiple instances.
  * */
 public class KafkaService {
-    private static final String HOST = "192.168.3.188:9092";
+    // Beijing VM
+//    private static final String HOST = "192.168.3.188:9092";
+    // MSI Main VM
+    private static final String HOST = "192.168.93.129:9092";
     private static KafkaProducer<String,String> kafkaProducer;
 
     public static void init() {
@@ -36,7 +39,7 @@ public class KafkaService {
 
     public static void main(String[] args) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "192.168.3.188:9092");
+        props.put("bootstrap.servers", HOST);
         props.put("acks", "all");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -44,7 +47,7 @@ public class KafkaService {
         Producer<String, String> producer = new KafkaProducer<>(props);
         System.out.println("sender ...");
         int i = 1;
-        producer.send(new ProducerRecord<String, String>("test", Integer.toString(i), Integer.toString(i)));
+        producer.send(new ProducerRecord<>("test", "fuck", "you"));
         System.out.println("over ...");
         producer.close();
     }

@@ -10,35 +10,14 @@ import model.rpcmodel.Request;
 import node.INode;
 import node.NodeImpl;
 import rpc.impl.RpcClientImpl;
+import util.Common;
 import util.kafka.KafkaService;
 
 import java.util.Arrays;
 
 public class BootStrap {
     private static final Gson gson = new GsonBuilder().create();      /** object和json字符串转换 */
-    /** 杭研院配置 */
-//    public static final String NODE01 = "192.168.0.26:8775";
-//    public static final String NODE02 = "192.168.0.26:8776";
-//    public static final String NODE03 = "192.168.0.42:8775";
-//    public static final String NODE04 = "192.168.0.42:8776";
-//    public static final String NODE05 = "192.168.0.46:8775";
-//    public static final String Robot_Addr = "192.168.0.65";
 
-    /** 树莓派 */
-    public static final String NODE01 = "192.168.3.213:8775";
-    public static final String NODE02 = "192.168.3.243:8775";
-    public static final String NODE03 = "192.168.3.148:8775";
-    public static final String NODE04 = "192.168.3.253:8775";
-    public static final String NODE05 = "192.168.3.129:8775";
-    public static final String Robot_Addr = "192.168.3.188";
-
-    /** 北航虚拟机上节点配置 */
-//    public static final String NODE01 = "localhost:8775";
-//    public static final String NODE02 = "localhost:8776";
-//    public static final String NODE03 = "localhost:8777";
-//    public static final String NODE04 = "localhost:8778";
-//    public static final String NODE05 = "localhost:8779";
-//    public static final String Robot_Addr = "192.168.3.188";
     public static final boolean isClient = false;
 
     public static void main(String args[]) throws Throwable {
@@ -66,7 +45,7 @@ public class BootStrap {
                     .description("人生第"+(i+1)+"次采集")
                     .deviceId(deviceId)
                     .frequency(100) // 100hz
-                    .ipAddr(Robot_Addr)
+                    .ipAddr(Common.Robot_Addr)
                     .port(8888)
                     .protocol("tcp")
                     .build();
@@ -79,7 +58,7 @@ public class BootStrap {
             Request request = Request.newBuilder()
                     .cmd(Request.CLIENT_REQ)
                     .obj(clientKVReq)
-                    .url(NODE01)
+                    .url(Common.NODE01)
                     .build();
             rpcClient.send(request);
 
@@ -94,7 +73,7 @@ public class BootStrap {
     /** 毕设正常入口 */
     public static void GraduateMain(String ipAddr,int port) throws Throwable {
         String []peerAddrs = {
-                NODE01,NODE02,NODE03,NODE04,NODE05
+                Common.NODE01,Common.NODE02,Common.NODE03,Common.NODE04,Common.NODE05
         };
 
         /** 第一步配置相关参数 */

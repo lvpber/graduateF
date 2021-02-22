@@ -15,6 +15,7 @@ D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\concurrent\RaftName
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\statemachine\impl\StateMachineImpl.java
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\model\consensusmodel\aentry\AentryParam.java
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\model\logmodulemodel\Command.java
+D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\util\Common.java
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\util\kafka\KafkaService.java
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\exception\collectingexception\ConnectInterruptedException.java
 D:\software\IDEA\workSpace\graduateF\graduateF\src\main\java\model\peer\PeerSet.java

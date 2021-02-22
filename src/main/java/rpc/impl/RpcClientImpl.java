@@ -21,6 +21,8 @@ public class RpcClientImpl implements IRpcClient {
             result = (Response) rpcClient.invokeSync(request.getUrl(), request, 150);
         }
         catch (RemotingException e) {
+//            System.out.println("rpc call error");
+//            e.printStackTrace();
             throw new RaftRemotingException();
         }
         finally {

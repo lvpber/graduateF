@@ -30,6 +30,7 @@ model\kafkamsg\robotmsg\RobotStatMsg.class
 model\clientmodel\ClientKVReq$Type.class
 util\timer\HeartBeatTimerTask.class
 model\consensusmodel\aentry\AentryParam$1.class
+util\Common.class
 concurrent\RaftThreadPoolExecutor.class
 logmodule\ILogModule.class
 model\persistmodel\RaftPersistVal.class
