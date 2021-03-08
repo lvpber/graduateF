@@ -730,19 +730,27 @@ public class NodeImpl implements INode, ILifeCycle {
                         log.getCommand().getValue().equals(logEntry.getCommand().getValue()));
                 RunningTasksMap.put(targetHost,tasks);
             } else if(logEntry.getCommand().getOpType() == Command.ADD) {
-                State state = State.newBuilder()
-                    .value(logEntry.getCommand().getValue())
-                    .targetAddr(logEntry.getTargetHost())
-                    .build();
-                String value = gson.toJson(state);
-                StoreUtil.write(STATEKEY,logEntry.getCommand().getKey(),value);
+                // 有可能出现客户端重复发送采集请求，这时候系统会出现两个log，
+                // 这两个log的采集任务是一致的但是分配的节点是不同的，也就是出现幂等性问题，解决办法就是如果当前状态机里已经存在了这个状态
+                // 那么就对当前的状态不做任何处理，也就是认为这是一个空请求，对于每一个follower由于都会执行apply，到达当前log的时候一定是一致的
+                // 所以这样做在每一个节点都是一样的，不会出现错误
+                String key = logEntry.getCommand().getKey();
+                State state =gson.fromJson(StoreUtil.read(STATEKEY,key),State.class);
+                if(state == null) {
+                    state = State.newBuilder()
+                            .value(logEntry.getCommand().getValue())
+                            .targetAddr(logEntry.getTargetHost())
+                            .build();
+                    String value = gson.toJson(state);
+                    StoreUtil.write(STATEKEY,logEntry.getCommand().getKey(),value);
 
-                /** 变更内存的map */
-                String targetHost = logEntry.getTargetHost();
-                ArrayList<LogEntry> tasks;
-                tasks = RunningTasksMap.get(targetHost);
-                tasks.add(logEntry);
-                RunningTasksMap.put(targetHost,tasks);
+                    /** 变更内存的map */
+                    String targetHost = logEntry.getTargetHost();
+                    ArrayList<LogEntry> tasks;
+                    tasks = RunningTasksMap.get(targetHost);
+                    tasks.add(logEntry);
+                    RunningTasksMap.put(targetHost,tasks);
+                }
             } else if(logEntry.getCommand().getOpType() == Command.SET) {
                 /** 删除上一个节点的信息，在当前节点添加信息 */
                 State state = State.newBuilder()
